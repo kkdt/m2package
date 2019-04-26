@@ -1,0 +1,55 @@
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // none
+}
+
+defaultTasks 'clean', 'refresh'
+
+task clean(type: Delete, description: "Clean all generated artifacts") {
+    delete "m2package", "$buildDir"
+}
+
+task refresh(description: "Generate the sample Maven project") {
+    doFirst {
+        println "Cleaning out ${System.env.HOME}/.m2/repository"
+        project.delete(files("${System.env.HOME}/.m2/respository") {
+            //exclude '*.jar'
+        })
+    }
+
+    doLast {
+        println 'Generating sample project'
+        exec {
+            executable 'mvn'
+            args 'archetype:generate', '-DgroupId=sample', '-DartifactId=m2package', '-DinteractiveMode=false'
+        }
+
+        println "Going offline on initial project"
+        exec {
+            workingDir 'm2package'
+            executable 'mvn'
+            args 'dependency:go-offline'
+        }
+        println "The default Maven project POM is available a ${rootProject.projectDir}/m2package/pom.xml"
+    }
+}
+
+task build(type: Zip, description: "Build a zip of all Maven dependencies") {
+    doFirst {
+        println "Going offline on Maven project"
+        exec {
+            workingDir 'm2package'
+            executable 'mvn'
+            args 'dependency:go-offline'
+        }
+    }
+
+    archiveName = String.format("m2package-%s.zip", new Date().getTime())
+    destinationDir = file("$buildDir")
+    from fileTree(dir: "${System.env.HOME}/.m2")
+    from fileTree(dir:'m2package', include: 'pom.xml')
+
+}

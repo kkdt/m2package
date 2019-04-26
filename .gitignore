@@ -1,0 +1,6 @@
+build/
+m2package/
+*.classpath
+*.project
+.vagrant/
+.gradle/
