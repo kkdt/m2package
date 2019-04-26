@@ -8,6 +8,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
       vb.name = "m2package"
+      vb.memory = 512
+      vb.cpus = 1
   end
 
   # apache archiva
@@ -28,7 +30,7 @@ cat <<EOF >> /home/vagrant/.m2/settings.xml
 EOF
     chown -R vagrant:vagrant /home/vagrant/.m2
     echo "Starting Apache Archiva"
-    /opt/archiva/bin/archiva console > archiva.log &
+    su - vagrant -c '/opt/archiva/bin/archiva console > archiva.log &'
   SHELL
 
 end
