@@ -6,11 +6,11 @@
 
 > Note that the Gradle will remove `$HOME/.m2` so that you have a "fresh" local repository.
 
-1. Ensure that you have Gradle, Maven in your `PATH`
+1. Ensure that you have Maven in your `PATH`
 
-2. Execute: `./gradlew`
+2. Execute: `./gradlew` (Linux) or `gradlew.bat` (Windows)
 
-3. Navigate to `m2package` folder and modify the `pom.xml` with the depdencies you need
+3. Navigate to `m2package` folder and modify the `pom.xml` with the dependencies you need
 
 4. Execute: `./gradlew build` to generate `build/m2package-<epoch>.zip`
 
@@ -18,7 +18,7 @@
 
 # Vagrant Environment
 
-A `Vagrantfile` is provided so that you can have a virtualized environment with Gradle and Maven installed. It also comes with a local instance of [Apache Archive](https://archiva.apache.org). The Vagrant environment locks Maven to use the local Apache Archiva which also proxies to Maven Central for artifacts - building will not only download the `$HOME/.m2` but also populates Archiva internal repository.
+A `Vagrantfile` is provided so that you can have a virtualized environment with Gradle and Maven installed. It also comes with a local instance of [Apache Archive](https://archiva.apache.org). The Vagrant environment locks Maven to use the local Apache Archiva which also proxies to Maven Central for artifacts - building will not only download to `$HOME/.m2` but also populates Archiva internal repository.
 
 1. Navigate to `/vagrant` to access this project
 
@@ -28,7 +28,7 @@ A `Vagrantfile` is provided so that you can have a virtualized environment with 
 
 4. Follow Quick Start
 
-5. Archiva is installed in `/opt/archiva` and installation instructions can be found [here](https://archiva.apache.org/docs/2.2.3/quick-start.html)
+5. Archiva is installed in `/opt/archiva` and started by default - installation instructions can be found [here](https://archiva.apache.org/docs/2.2.3/quick-start.html)
 
 6. Archiva is running in Vagrant on port 8080 but you can reach it on your host machine at `http://localhost:8000`.
 
@@ -74,6 +74,36 @@ A `Vagrantfile` is provided so that you can have a virtualized environment with 
   ....
 </dependencies>
 ```
+
+# Archiva Configurations
+
+1. Archiva is configured with a Remote Repository to be Maven Central. Within the Vagrant environment, Maven is locked down to only talk to Archiva; therefore, whenever it reaches Archiva for artifacts, Archiva will reach out to Maven Central for the libraries and update its internal repository.
+
+2. A Gradle build can use the same Archiva instance for dependencies.
+
+3. A Gradle `buildscript` tag can be pointed to the Archiva instance for plugins (i.e. Spring Boot Gradle Plugin).
+
+   - Create a Remote Repository in Archiva pointing to `https://plugins.gradle.org/m2`
+
+   - Create a Proxy Connector for a Managed Repository (i.e. plugins or internal) pointing to the Gradle Plugin Remote Repository.
+
+   - Assure that the `Repository Observer - <repo>` (i.e. Repository Observer - plugins) role is assigned to the guest user
+
+   - In the Gradle build script, add the follow to `build.gradle`:
+
+   ```
+   buildscript {
+     repositories {
+       maven {
+         url "http://localhost:8080/repository/plugins"
+       }
+     }
+     dependencies {
+       classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+       classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
+     }
+   }
+   ```
 
 # Resources
 

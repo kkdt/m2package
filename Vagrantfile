@@ -29,8 +29,7 @@ cat <<EOF >> /home/vagrant/.m2/settings.xml
 </settings>
 EOF
     chown -R vagrant:vagrant /home/vagrant/.m2
-    echo "Starting Apache Archiva"
-    su - vagrant -c '/opt/archiva/bin/archiva console > archiva.log &'
+    su - vagrant -c '/opt/archiva/bin/archiva start'
   SHELL
 
 end

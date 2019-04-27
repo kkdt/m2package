@@ -1,10 +1,24 @@
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    // none
-}
+// buildscript {
+//   repositories {
+//     maven {
+//       url "http://localhost:8080/repository/plugins"
+//     }
+//   }
+//   dependencies {
+//     classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+//     classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
+//   }
+// }
+//
+// repositories {
+//     maven {
+//       url "http://localhost:8080/repository/internal"
+//     }
+// }
+//
+// dependencies {
+//     // none
+// }
 
 defaultTasks 'clean', 'refresh'
 
@@ -52,4 +66,6 @@ task build(type: Zip, description: "Build a zip of all Maven dependencies") {
     from fileTree(dir: "${System.env.HOME}/.m2")
     from fileTree(dir:'m2package', include: 'pom.xml')
 
+    // capture anything from archiva as well if directory exists
+    from fileTree(dir:'/opt/archiva/repositories', includes:["**/*"], excludes:["repositories"])
 }
