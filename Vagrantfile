@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
       vb.name = "m2package"
-      vb.memory = 512
+      vb.memory = 1024
       vb.cpus = 1
   end
 
@@ -22,7 +22,7 @@ cat <<EOF >> /home/vagrant/.m2/settings.xml
   <mirrors>
     <mirror>
       <id>archiva.default</id>
-      <url>http://localhost:8080/repository/internal/</url>
+      <url>http://localhost:8080/repository/cots/</url>
       <mirrorOf>external:*</mirrorOf>
     </mirror>
   </mirrors>

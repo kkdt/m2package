@@ -4,7 +4,7 @@
 
 # Quick Start
 
-> Note that the Gradle will remove `$HOME/.m2` so that you have a "fresh" local repository.
+> Note that Gradle will remove `$HOME/.m2` so that you have a "fresh" local repository.
 
 1. Ensure that you have Maven in your `PATH`
 
@@ -75,13 +75,15 @@ A `Vagrantfile` is provided so that you can have a virtualized environment with 
 </dependencies>
 ```
 
-# Archiva Configurations
+# Archiva Configurations and Gradle
 
 1. Archiva is configured with a Remote Repository to be Maven Central. Within the Vagrant environment, Maven is locked down to only talk to Archiva; therefore, whenever it reaches Archiva for artifacts, Archiva will reach out to Maven Central for the libraries and update its internal repository.
 
 2. A Gradle build can use the same Archiva instance for dependencies.
 
-3. A Gradle `buildscript` tag can be pointed to the Archiva instance for plugins (i.e. Spring Boot Gradle Plugin).
+3. Apache Archiva is preconfigured with two managed repositories: cots (proxy to Maven Central) and plugins (proxy to Gradle plugins).
+
+4. A Gradle `buildscript` tag can be pointed to the Archiva instance for plugins (i.e. Spring Boot Gradle Plugin).
 
    - Create a Remote Repository in Archiva pointing to `https://plugins.gradle.org/m2`
 
@@ -89,7 +91,7 @@ A `Vagrantfile` is provided so that you can have a virtualized environment with 
 
    - Assure that the `Repository Observer - <repo>` (i.e. Repository Observer - plugins) role is assigned to the guest user
 
-   - In the Gradle build script, add the follow to `build.gradle`:
+   - For example, in the Gradle build script, add the follow to `build.gradle`:
 
    ```
    buildscript {
@@ -102,6 +104,14 @@ A `Vagrantfile` is provided so that you can have a virtualized environment with 
        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
      }
+   }
+
+   repositories {
+     maven { url "http://localhost:8080/repository/cots" }
+   }
+
+   dependencies {
+     compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.1.4.RELEASE'
    }
    ```
 

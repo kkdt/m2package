@@ -1,23 +1,20 @@
 // buildscript {
-//   repositories {
-//     maven {
-//       url "http://localhost:8080/repository/plugins"
+//     repositories {
+//         maven { url "http://localhost:8080/repository/plugins" }
 //     }
-//   }
-//   dependencies {
-//     classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
-//     classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
-//   }
+//     dependencies {
+//         classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+//         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
+//     }
 // }
 //
 // repositories {
-//     maven {
-//       url "http://localhost:8080/repository/internal"
-//     }
+//     maven { url "http://localhost:8080/repository/cots" }
 // }
 //
 // dependencies {
-//     // none
+//     compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.1.4.RELEASE'
+//
 // }
 
 defaultTasks 'clean', 'refresh'
