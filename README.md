@@ -70,6 +70,33 @@ A `Vagrantfile` is provided so that you can have a virtualized environment with 
 <dependencies>
   <dependency>
     <!-- Dependency from the archiva repository -->
+    <exclusions>
+      <exclusion>  <!-- declare the exclusion here -->
+        <groupId></groupId>
+        <artifactId></artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>
+
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+    <version>2.0.9.RELEASE</version>
+    <scope>compile</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <version>2.0.9.RELEASE</version>
+    <scope>compile</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
+    <version>2.0.9.RELEASE</version>
+    <scope>compile</scope>
   </dependency>
   ....
 </dependencies>

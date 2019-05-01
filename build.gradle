@@ -42,7 +42,7 @@ task refresh(description: "Generate the sample Maven project") {
         exec {
             workingDir 'm2package'
             executable 'mvn'
-            args 'dependency:go-offline'
+            args 'dependency:go-offline', 'compile'
         }
         println "The default Maven project POM is available a ${rootProject.projectDir}/m2package/pom.xml"
     }
@@ -54,15 +54,21 @@ task build(type: Zip, description: "Build a zip of all Maven dependencies") {
         exec {
             workingDir 'm2package'
             executable 'mvn'
-            args 'dependency:go-offline'
+            args 'dependency:go-offline', 'compile'
         }
     }
 
     archiveName = String.format("m2package-%s.zip", new Date().getTime())
     destinationDir = file("$buildDir")
+
+    // TODO: Exclude all Maven plugins artifacts - i.e. excludes: ["*/**/org/apache/maven", "*/**/org/apache/apache"]
     from fileTree(dir: "${System.env.HOME}/.m2")
     from fileTree(dir:'m2package', include: 'pom.xml')
 
     // capture anything from archiva as well if directory exists
     from fileTree(dir:'/opt/archiva/repositories', includes:["**/*"], excludes:["repositories"])
+
+    // permissions
+    fileMode = 0755
+    dirMode = 0755
 }
